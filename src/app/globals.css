@@ -1,26 +1,267 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Brand */
+  --color-brand-charcoal: #111111;
+  --color-brand-canvas: #f7f4ee;
+  --color-brand-orange: #ff6b35;
+  --color-brand-lavender: #7b61ff;
+  --color-brand-sage: #7e8b6e;
+  --color-brand-sunshine: #ffc533;
+
+  /* Neutral palette */
+  --color-neutral-950: #111111;
+  --color-neutral-900: #20201d;
+  --color-neutral-800: #383832;
+  --color-neutral-700: #55554e;
+  --color-neutral-600: #77776e;
+  --color-neutral-500: #96958c;
+  --color-neutral-400: #b8b5aa;
+  --color-neutral-300: #d8d4c9;
+  --color-neutral-200: #e8e3d9;
+  --color-neutral-100: #f0ece4;
+  --color-neutral-50: #fbfaf7;
+
+  /* Semantic */
+  --color-success: #367a55;
+  --color-success-soft: #e8f2e9;
+  --color-warning: #a66a17;
+  --color-warning-soft: #fbf0d9;
+  --color-error: #b84336;
+  --color-error-soft: #f9e9e5;
+  --color-info: #426c8c;
+  --color-info-soft: #e8f0f5;
+
+  /* Typography */
+  --font-display: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: var(--font-instrument-serif), ui-serif, Georgia, serif;
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 20px rgb(17 17 17 / 0.04);
+  --shadow-dropdown: 0 12px 36px rgb(17 17 17 / 0.1);
+  --shadow-pop: 0 8px 28px rgb(17 17 17 / 0.14);
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Container */
+  --container-page: 1440px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis:not(.lenis-smooth) {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    background-color: var(--color-brand-canvas);
+    color: var(--color-neutral-950);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-orange);
+    color: var(--color-brand-charcoal);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-charcoal);
+    outline-offset: 2px;
+  }
+
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    opacity: 0.5;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+  padding-inline: 20px;
+  @media (width >= 48rem) {
+    padding-inline: 32px;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 64px;
+  }
+}
+
+/* Editorial helpers */
+@utility text-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+}
+
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+@utility link-underline {
+  position: relative;
+  text-underline-offset: 4px;
+  transition: color 180ms var(--ease-standard);
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 480ms var(--ease-standard),
+    transform 480ms var(--ease-standard);
+}
+.reveal.is-inview {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-neutral-100);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+  animation: shimmer 1.6s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+}
+
+/* Dark section selection */
+.dark-section ::selection {
+  background-color: var(--color-brand-orange);
+  color: var(--color-brand-charcoal);
+}
+
+/* Modal/dropdown open animation (radix data-state driven) */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes pop-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes slide-out-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+[data-state="open"].anim-pop {
+  animation: pop-in 200ms var(--ease-standard);
+}
+[data-state="closed"].anim-pop {
+  animation: pop-out 160ms var(--ease-standard);
+}
+[data-state="open"].anim-overlay {
+  animation: fade-in 200ms var(--ease-standard);
+}
+[data-state="closed"].anim-overlay {
+  animation: fade-out 160ms var(--ease-standard);
+}
+[data-state="open"].anim-sheet {
+  animation: slide-in-right 240ms var(--ease-standard);
+}
+[data-state="closed"].anim-sheet {
+  animation: slide-out-right 200ms var(--ease-standard);
 }
